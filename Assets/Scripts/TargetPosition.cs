@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
-using Unity.VisualScripting;
+using Unity.Mathematics;
 using UnityEngine;
 
-
-public class SpeedAuthoring : MonoBehaviour
+public struct TargetPosition : IComponentData
 {
-    public float Value;
+    public float3 Value;
 }
-
