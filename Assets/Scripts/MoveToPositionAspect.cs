@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -15,7 +16,7 @@ public readonly partial  struct MoveToPositionAspect : IAspect
     private readonly RefRW<TargetPosition> _targetPosition;
 
 
-    public void Move(float deltaTime)
+    public void Move(float deltaTime, RefRW<RandomComponent> randomComponent)
     {
         //calculate direction
         float3 direction = math.normalize(_targetPosition.ValueRW.Value - _transform.ValueRW.Position);
@@ -26,6 +27,18 @@ public readonly partial  struct MoveToPositionAspect : IAspect
         if (math.distancesq(_transform.ValueRW.Position, _targetPosition.ValueRW.Value) < reachedTargetDistance)
         {
             //Generate New Random Target Position
+            _targetPosition.ValueRW.Value = GetRandomPosition(randomComponent);
+            Debug.Log(_targetPosition.ValueRW.Value);
         }
+
+        
+    }
+
+    private float3 GetRandomPosition(RefRW<RandomComponent> randomComponent)
+    {
+
+
+        return new float3(randomComponent.ValueRW.random.NextFloat(0f, 10f), 0, randomComponent.ValueRW.random.NextFloat(0f, 10f));
+
     }
 }

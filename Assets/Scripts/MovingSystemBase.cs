@@ -7,11 +7,18 @@ using Unity.Mathematics;
 
 public partial class MovingSystemBase : SystemBase
 {
+    protected override void OnCreate()
+    {
+        RequireForUpdate<RandomComponent>();
+    }
+
     protected override void OnUpdate()
     {
+        RefRW<RandomComponent> randomComponent = SystemAPI.GetSingletonRW<RandomComponent>();
+
         Entities.ForEach((MoveToPositionAspect moveToPositionAspect) =>
         {
-            moveToPositionAspect.Move(SystemAPI.Time.DeltaTime);
+            moveToPositionAspect.Move(SystemAPI.Time.DeltaTime, randomComponent);
         }).Run();
     }
 }
