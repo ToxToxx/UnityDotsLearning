@@ -9,12 +9,9 @@ public partial class MovingSystemBase : SystemBase
 {
     protected override void OnUpdate()
     {
-        Entities.ForEach((ref LocalTransform transform, in Speed speed, in TargetPosition targetPosition) =>
+        Entities.ForEach((MoveToPositionAspect moveToPositionAspect) =>
         {
-            //calculate direction
-            float3 direction = math.normalize(targetPosition.Value - transform.Position);
-            //Move
-            transform.Position += direction * (SystemAPI.Time.DeltaTime * speed.Value);
+            moveToPositionAspect.Move(SystemAPI.Time.DeltaTime);
         }).Run();
     }
 }
