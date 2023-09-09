@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
+using Unity.Jobs;
+using Unity.Collections.LowLevel.Unsafe;
 
 public partial struct MovingISystem : ISystem
 {
@@ -11,17 +13,19 @@ public partial struct MovingISystem : ISystem
         state.RequireForUpdate<RandomComponent>();
     }
 
-    public void OnUpdate(ref SystemState systemState)
+    public void OnUpdate(ref SystemState state)
     {
         RefRW<RandomComponent> randomComponent = SystemAPI.GetSingletonRW<RandomComponent>();
 
         float deltaTime = SystemAPI.Time.DeltaTime;
-        new MoveJob
+
+        JobHandle jobHandle = new MoveJob
         {
             deltaTime = deltaTime
-        }.ScheduleParallel();
+        }.ScheduleParallel(state.Dependency);
 
-        return;
+        jobHandle.Complete();
+
         new TestReachedTargetPositionJob
         {
             randomComponent = randomComponent
@@ -39,7 +43,7 @@ public partial struct MoveJob : IJobEntity
 }
 public partial struct TestReachedTargetPositionJob : IJobEntity
 {
-    public RefRW<RandomComponent> randomComponent;
+   [NativeDisableUnsafePtrRestriction] public RefRW<RandomComponent> randomComponent;
     public void Execute(MoveToPositionAspect moveToPositionAspect)
     {
         moveToPositionAspect.TestReachedTargetPosition(randomComponent);
