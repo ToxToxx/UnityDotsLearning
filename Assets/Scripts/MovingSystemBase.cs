@@ -15,10 +15,12 @@ public partial class MovingSystemBase : SystemBase
     protected override void OnUpdate()
     {
         RefRW<RandomComponent> randomComponent = SystemAPI.GetSingletonRW<RandomComponent>();
+        float deltaTime = SystemAPI.Time.DeltaTime;
 
         Entities.ForEach((MoveToPositionAspect moveToPositionAspect) =>
         {
-            moveToPositionAspect.Move(SystemAPI.Time.DeltaTime, randomComponent);
+            moveToPositionAspect.Move(deltaTime);
+            moveToPositionAspect.TestReachedTargetPosition(randomComponent);
         }).Run();
     }
 }

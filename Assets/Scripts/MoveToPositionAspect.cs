@@ -16,13 +16,17 @@ public readonly partial  struct MoveToPositionAspect : IAspect
     private readonly RefRW<TargetPosition> _targetPosition;
 
 
-    public void Move(float deltaTime, RefRW<RandomComponent> randomComponent)
+    public void Move(float deltaTime)
     {
         //calculate direction
         float3 direction = math.normalize(_targetPosition.ValueRW.Value - _transform.ValueRW.Position);
         //Move to target position
         _transform.ValueRW.Position += direction * deltaTime * _speed.ValueRO.Value;
+        
+    }
 
+    public void TestReachedTargetPosition( RefRW<RandomComponent> randomComponent)
+    {
         float reachedTargetDistance = .5f;
         if (math.distancesq(_transform.ValueRW.Position, _targetPosition.ValueRW.Value) < reachedTargetDistance)
         {
@@ -30,8 +34,6 @@ public readonly partial  struct MoveToPositionAspect : IAspect
             _targetPosition.ValueRW.Value = GetRandomPosition(randomComponent);
             Debug.Log(_targetPosition.ValueRW.Value);
         }
-
-        
     }
 
     private float3 GetRandomPosition(RefRW<RandomComponent> randomComponent)

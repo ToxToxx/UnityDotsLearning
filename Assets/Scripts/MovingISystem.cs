@@ -15,9 +15,33 @@ public partial struct MovingISystem : ISystem
     {
         RefRW<RandomComponent> randomComponent = SystemAPI.GetSingletonRW<RandomComponent>();
 
-        foreach (MoveToPositionAspect moveToPositionAspect in SystemAPI.Query<MoveToPositionAspect>())
+        float deltaTime = SystemAPI.Time.DeltaTime;
+        new MoveJob
         {
-            moveToPositionAspect.Move(SystemAPI.Time.DeltaTime, randomComponent);
-        }
+            deltaTime = deltaTime
+        }.ScheduleParallel();
+
+        return;
+        new TestReachedTargetPositionJob
+        {
+            randomComponent = randomComponent
+        }.Run();
+    }
+}
+
+public partial struct MoveJob : IJobEntity
+{
+    public float deltaTime;
+    public void Execute(MoveToPositionAspect moveToPositionAspect)
+    {
+        moveToPositionAspect.Move(deltaTime);
+    }
+}
+public partial struct TestReachedTargetPositionJob : IJobEntity
+{
+    public RefRW<RandomComponent> randomComponent;
+    public void Execute(MoveToPositionAspect moveToPositionAspect)
+    {
+        moveToPositionAspect.TestReachedTargetPosition(randomComponent);
     }
 }
