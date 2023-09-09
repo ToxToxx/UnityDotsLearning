@@ -15,12 +15,21 @@ public partial class PlayerSpawnerSystem : SystemBase
         EntityQuery playerEntityQuery = EntityManager.CreateEntityQuery(typeof(PlayerTag));
 
         PlayerSpawner playerSpawner = SystemAPI.GetSingleton<PlayerSpawner>();
+        RefRW<RandomComponent> randomComponent = SystemAPI.GetSingletonRW<RandomComponent>();
 
 
-        int spawnAmount = 2;
+
+        EntityCommandBuffer entityCommandBuffer = 
+            SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(World.Unmanaged);
+
+        int spawnAmount = 20;
         if( playerEntityQuery.CalculateEntityCount() < spawnAmount)
         {
-            EntityManager.Instantiate(playerSpawner.playerPrefab);
+            Entity spawnedEntity = entityCommandBuffer.Instantiate(playerSpawner.playerPrefab);
+            entityCommandBuffer.SetComponent(spawnedEntity, new Speed
+            {
+                Value = randomComponent.ValueRW.random.NextFloat(1f, 10f)
+            });
         }
     }
 }
