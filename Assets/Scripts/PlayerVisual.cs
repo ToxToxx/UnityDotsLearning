@@ -11,9 +11,15 @@ public class PlayerVisual : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _targetEntity = GetRandomEntity();
+        }
         if (_targetEntity != Entity.Null)
         {
-            Vector3 followPosition = World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<LocalTransform>(_targetEntity).Position;
+            Vector3 followPosition = 
+                World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<LocalTransform>(_targetEntity).Position;
+            transform.position = followPosition;
         }
     }
 
