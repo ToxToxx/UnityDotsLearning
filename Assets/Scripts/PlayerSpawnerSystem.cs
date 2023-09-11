@@ -22,7 +22,7 @@ public partial class PlayerSpawnerSystem : SystemBase
         EntityCommandBuffer entityCommandBuffer = 
             SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(World.Unmanaged);
 
-        int spawnAmount = 20;
+        int spawnAmount = 10000;
         if( playerEntityQuery.CalculateEntityCount() < spawnAmount)
         {
             Entity spawnedEntity = entityCommandBuffer.Instantiate(playerSpawner.playerPrefab);

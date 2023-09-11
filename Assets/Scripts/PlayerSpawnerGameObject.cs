@@ -10,7 +10,7 @@ public class PlayerSpawnerGameObject : MonoBehaviour
 
     private void Start()
     {
-        int spawnAmount = 20;
+        int spawnAmount = 0;
         for(int i = 0; i < spawnAmount; i++)
         {
             GameObject playerGameObject = Instantiate(playerPrefab);
